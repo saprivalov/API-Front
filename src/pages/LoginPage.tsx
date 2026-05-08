@@ -13,7 +13,7 @@ export default function LoginPage() {
 
   const onFinish = async (values: LoginBody) => {
     const result = await login(values)
-    if ('data' in result) {
+    if ('data' in result && result.data) {
       dispatch(setTokens(result.data.data))
     }
   }

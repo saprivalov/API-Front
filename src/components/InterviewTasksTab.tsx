@@ -200,7 +200,7 @@ export default function InterviewTasksTab() {
         open={createOpen}
         onCancel={() => { setCreateOpen(false); createForm.resetFields() }}
         footer={null}
-        destroyOnHide
+        destroyOnClose
       >
         <Form form={createForm} layout="vertical" onFinish={onCreateSubmit} className="pt-2">
           <Form.Item
@@ -240,7 +240,7 @@ export default function InterviewTasksTab() {
         open={!!editTask}
         onCancel={() => setEditTask(null)}
         footer={null}
-        destroyOnHide
+        destroyOnClose
       >
         <Form form={editForm} layout="vertical" onFinish={onEditSubmit} className="pt-2">
           <Form.Item label="Title" name="title" rules={[{ min: 5, max: 150 }]}>

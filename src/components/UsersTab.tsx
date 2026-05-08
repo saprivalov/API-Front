@@ -84,7 +84,7 @@ export default function UsersTab() {
         open={open}
         onCancel={() => { setOpen(false); form.resetFields() }}
         footer={null}
-        destroyOnHide
+        destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={onSubmit} className="pt-2">
           <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>
