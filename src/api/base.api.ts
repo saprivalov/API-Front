@@ -13,6 +13,6 @@ export const baseApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['User', 'InterviewTask', 'Submission'],
+  tagTypes: ['User', 'InterviewTask', 'Submission', 'AgentTask', 'ApiKey'],
   endpoints: () => ({}),
 })

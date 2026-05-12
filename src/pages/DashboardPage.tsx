@@ -6,6 +6,8 @@ import { useAuth } from '../hooks/useAuth'
 import InterviewTasksTab from '../components/InterviewTasksTab'
 import UsersTab from '../components/UsersTab'
 import SubmissionsTab from '../components/SubmissionsTab'
+import AgentTasksTab from '../components/AgentTasksTab'
+import ApiKeysTab from '../components/ApiKeysTab'
 
 const { Header, Content } = Layout
 const { Text } = Typography
@@ -26,11 +28,23 @@ export default function DashboardPage() {
       label: 'Submissions',
       children: <SubmissionsTab />,
     },
-    ...(isMentor ? [{
-      key: 'users',
-      label: 'Users',
-      children: <UsersTab />,
-    }] : []),
+    {
+      key: 'agent-tasks',
+      label: 'Agent Tasks',
+      children: <AgentTasksTab />,
+    },
+    ...(isMentor ? [
+      {
+        key: 'users',
+        label: 'Users',
+        children: <UsersTab />,
+      },
+      {
+        key: 'api-keys',
+        label: 'API Keys',
+        children: <ApiKeysTab />,
+      },
+    ] : []),
   ]
 
   return (
