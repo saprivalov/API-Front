@@ -54,7 +54,7 @@ export default function DashboardPage() {
     <Layout className="min-h-screen bg-gray-50">
       <Header className="flex items-center justify-between px-6 !bg-white border-b border-gray-200 shadow-sm">
         <Text strong className="text-lg !text-purple-600">
-          Interview Platform
+          The Orchestra of Agents
         </Text>
         <Space>
           <UserOutlined className="text-gray-500" />
