@@ -3,9 +3,9 @@ import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
 import { clearTokens } from '../store/auth.slice'
 import { useAuth } from '../hooks/useAuth'
-import InterviewTasksTab from '../components/InterviewTasksTab'
+// import InterviewTasksTab from '../components/InterviewTasksTab' // temporarily hidden
 import UsersTab from '../components/UsersTab'
-import SubmissionsTab from '../components/SubmissionsTab'
+// import SubmissionsTab from '../components/SubmissionsTab' // temporarily hidden
 import AgentTasksTab from '../components/AgentTasksTab'
 import ApiKeysTab from '../components/ApiKeysTab'
 
@@ -18,16 +18,17 @@ export default function DashboardPage() {
   const isMentor = auth?.role === 'mentor'
 
   const tabs = [
-    {
-      key: 'tasks',
-      label: 'Interview Tasks',
-      children: <InterviewTasksTab />,
-    },
-    {
-      key: 'submissions',
-      label: 'Submissions',
-      children: <SubmissionsTab />,
-    },
+    // temporarily hidden — see task "Скрыть Interview Tasks и Submitions блоки"
+    // {
+    //   key: 'tasks',
+    //   label: 'Interview Tasks',
+    //   children: <InterviewTasksTab />,
+    // },
+    // {
+    //   key: 'submissions',
+    //   label: 'Submissions',
+    //   children: <SubmissionsTab />,
+    // },
     {
       key: 'agent-tasks',
       label: 'Agent Tasks',
@@ -69,7 +70,7 @@ export default function DashboardPage() {
 
       <Content className="p-6">
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <Tabs defaultActiveKey="tasks" items={tabs} />
+          <Tabs defaultActiveKey="agent-tasks" items={tabs} />
         </div>
       </Content>
     </Layout>
