@@ -9,6 +9,10 @@ export const UserSchema = z.object({
   role: RoleSchema,
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
+  _count: z.object({
+    createdTasks: z.number(),
+    submissions: z.number(),
+  }).optional(),
 })
 
 export const UsersListResponseSchema = z.object({

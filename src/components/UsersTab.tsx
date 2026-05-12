@@ -46,16 +46,29 @@ export default function UsersTab() {
       render: (role) => <Tag color={roleColors[role]}>{role}</Tag>,
     },
     {
+      title: 'Tasks',
+      key: 'tasks',
+      width: 80,
+      align: 'center' as const,
+      render: (_: unknown, record: User) => (
+        <Text strong>{record._count?.createdTasks ?? 0}</Text>
+      ),
+    },
+    {
+      title: 'Submissions',
+      key: 'submissions',
+      width: 110,
+      align: 'center' as const,
+      render: (_: unknown, record: User) => (
+        <Text>{record._count?.submissions ?? 0}</Text>
+      ),
+    },
+    {
       title: 'Created',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 110,
       render: (date) => new Date(date).toLocaleDateString(),
-    },
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      render: (id) => <Text code className="text-xs">{id.slice(0, 8)}…</Text>,
     },
   ]
 
