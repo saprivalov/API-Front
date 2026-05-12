@@ -62,7 +62,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm px-4">
         <div className="text-center mb-8">
           <Title level={2} className="!mb-1 !text-purple-600">
-            Interview Platform
+            The Orchestra of Agents
           </Title>
           <Text type="secondary">
             {mode === 'login' ? 'Sign in to your account' : 'Create a new account'}
