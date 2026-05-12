@@ -50,18 +50,14 @@ export default function UsersTab() {
       key: 'tasks',
       width: 80,
       align: 'center' as const,
-      render: (_: unknown, record: User) => (
-        <Text strong>{record._count?.createdTasks ?? 0}</Text>
-      ),
+      render: (_: unknown, record: User) => <Text strong>{record._count?.createdTasks ?? 0}</Text>,
     },
     {
       title: 'Submissions',
       key: 'submissions',
       width: 110,
       align: 'center' as const,
-      render: (_: unknown, record: User) => (
-        <Text>{record._count?.submissions ?? 0}</Text>
-      ),
+      render: (_: unknown, record: User) => <Text>{record._count?.submissions ?? 0}</Text>,
     },
     {
       title: 'Created',
@@ -95,7 +91,10 @@ export default function UsersTab() {
       <Modal
         title="Create User"
         open={open}
-        onCancel={() => { setOpen(false); form.resetFields() }}
+        onCancel={() => {
+          setOpen(false)
+          form.resetFields()
+        }}
         footer={null}
         destroyOnClose
       >
@@ -103,23 +102,30 @@ export default function UsersTab() {
           <Form.Item label="Email" name="email" rules={[{ required: true, type: 'email' }]}>
             <Input placeholder="user@example.com" />
           </Form.Item>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, min: 2, max: 100 }]}
-          >
+          <Form.Item label="Name" name="name" rules={[{ required: true, min: 2, max: 100 }]}>
             <Input placeholder="Full Name" />
           </Form.Item>
           <Form.Item label="Role" name="role" initialValue="candidate">
-            <Select options={[
-              { value: 'candidate', label: 'Candidate' },
-              { value: 'mentor', label: 'Mentor' },
-            ]} />
+            <Select
+              options={[
+                { value: 'candidate', label: 'Candidate' },
+                { value: 'mentor', label: 'Mentor' },
+              ]}
+            />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
-              <Button onClick={() => { setOpen(false); form.resetFields() }}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={creating}>Create</Button>
+              <Button
+                onClick={() => {
+                  setOpen(false)
+                  form.resetFields()
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={creating}>
+                Create
+              </Button>
             </Space>
           </Form.Item>
         </Form>

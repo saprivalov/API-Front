@@ -19,7 +19,10 @@ export const InterviewTaskSchema = z.object({
   level: TaskLevelSchema,
   createdByUserId: z.string().uuid(),
   creator: CreatorSchema.optional().nullable(),
-  taskTags: z.array(z.object({ tag: TagSchema })).optional().nullable(),
+  taskTags: z
+    .array(z.object({ tag: TagSchema }))
+    .optional()
+    .nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 })

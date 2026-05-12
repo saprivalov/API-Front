@@ -36,14 +36,20 @@ export const interviewTasksApi = baseApi.injectEndpoints({
       invalidatesTags: ['InterviewTask'],
     }),
 
-    updateInterviewTask: build.mutation<InterviewTaskResponse, { id: string } & UpdateInterviewTaskBody>({
+    updateInterviewTask: build.mutation<
+      InterviewTaskResponse,
+      { id: string } & UpdateInterviewTaskBody
+    >({
       query: ({ id, ...body }) => ({
         url: `/interview-tasks/${id}`,
         method: 'PATCH',
         body,
       }),
       transformResponse: (raw) => InterviewTaskResponseSchema.parse(raw),
-      invalidatesTags: (_result, _error, { id }) => ['InterviewTask', { type: 'InterviewTask', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        'InterviewTask',
+        { type: 'InterviewTask', id },
+      ],
     }),
 
     deleteInterviewTask: build.mutation<void, string>({

@@ -1,7 +1,19 @@
 import { useState } from 'react'
 import {
-  Table, Button, Modal, Form, Input, Select, Tag, Space,
-  Alert, Typography, Popconfirm, Tooltip, Descriptions, Badge,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Tag,
+  Space,
+  Alert,
+  Typography,
+  Popconfirm,
+  Tooltip,
+  Descriptions,
+  Badge,
 } from 'antd'
 import { PlusOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
@@ -10,7 +22,12 @@ import {
   useCreateAgentTaskMutation,
   useDeleteAgentTaskMutation,
 } from '../api/agent-tasks.api'
-import type { AgentTask, AgentTaskStatus, GetAgentTasksQuery, CreateAgentTaskBody } from '../schemas/agent-task.schemas'
+import type {
+  AgentTask,
+  AgentTaskStatus,
+  GetAgentTasksQuery,
+  CreateAgentTaskBody,
+} from '../schemas/agent-task.schemas'
 import { useAuth } from '../hooks/useAuth'
 
 const { Text } = Typography
@@ -64,26 +81,40 @@ export default function AgentTasksTab() {
       key: 'status',
       width: 130,
       render: (status: AgentTaskStatus) => (
-        <Badge status={STATUS_BADGE[status]} text={
-          <Tag color={STATUS_COLOR[status]} className="!m-0">{status.replace('_', ' ')}</Tag>
-        } />
+        <Badge
+          status={STATUS_BADGE[status]}
+          text={
+            <Tag color={STATUS_COLOR[status]} className="!m-0">
+              {status.replace('_', ' ')}
+            </Tag>
+          }
+        />
       ),
     },
     {
       title: 'Agent',
       dataIndex: 'agentId',
       key: 'agentId',
-      render: (agentId) => agentId
-        ? <Text code className="text-xs">{agentId}</Text>
-        : <Text type="secondary">—</Text>,
+      render: (agentId) =>
+        agentId ? (
+          <Text code className="text-xs">
+            {agentId}
+          </Text>
+        ) : (
+          <Text type="secondary">—</Text>
+        ),
     },
     {
       title: 'Created by',
       key: 'creator',
       render: (_, record) =>
-        record.creator
-          ? <Text>{record.creator.name}</Text>
-          : <Text code className="text-xs">{record.createdByUserId.slice(0, 8)}…</Text>,
+        record.creator ? (
+          <Text>{record.creator.name}</Text>
+        ) : (
+          <Text code className="text-xs">
+            {record.createdByUserId.slice(0, 8)}…
+          </Text>
+        ),
     },
     {
       title: 'Date',
@@ -145,7 +176,9 @@ export default function AgentTasksTab() {
         )}
       </div>
 
-      {error && <Alert type="error" message="Failed to load agent tasks" className="mb-4" showIcon />}
+      {error && (
+        <Alert type="error" message="Failed to load agent tasks" className="mb-4" showIcon />
+      )}
 
       <Table
         columns={columns}
@@ -166,7 +199,10 @@ export default function AgentTasksTab() {
       <Modal
         title="Create Agent Task"
         open={createOpen}
-        onCancel={() => { setCreateOpen(false); form.resetFields() }}
+        onCancel={() => {
+          setCreateOpen(false)
+          form.resetFields()
+        }}
         footer={null}
         destroyOnClose
       >
@@ -179,8 +215,17 @@ export default function AgentTasksTab() {
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
-              <Button onClick={() => { setCreateOpen(false); form.resetFields() }}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={creating}>Create</Button>
+              <Button
+                onClick={() => {
+                  setCreateOpen(false)
+                  form.resetFields()
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={creating}>
+                Create
+              </Button>
             </Space>
           </Form.Item>
         </Form>
@@ -197,15 +242,21 @@ export default function AgentTasksTab() {
         {detailTask && (
           <Descriptions column={1} size="small" bordered className="mt-3">
             <Descriptions.Item label="ID">
-              <Text code copyable>{detailTask.id}</Text>
+              <Text code copyable>
+                {detailTask.id}
+              </Text>
             </Descriptions.Item>
             <Descriptions.Item label="Status">
-              <Tag color={STATUS_COLOR[detailTask.status]}>{detailTask.status.replace('_', ' ')}</Tag>
+              <Tag color={STATUS_COLOR[detailTask.status]}>
+                {detailTask.status.replace('_', ' ')}
+              </Tag>
             </Descriptions.Item>
             <Descriptions.Item label="Agent">
-              {detailTask.agentId
-                ? <Text code>{detailTask.agentId}</Text>
-                : <Text type="secondary">unassigned</Text>}
+              {detailTask.agentId ? (
+                <Text code>{detailTask.agentId}</Text>
+              ) : (
+                <Text type="secondary">unassigned</Text>
+              )}
             </Descriptions.Item>
             {detailTask.description && (
               <Descriptions.Item label="Description">{detailTask.description}</Descriptions.Item>

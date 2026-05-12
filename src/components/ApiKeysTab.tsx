@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import {
-  Table, Button, Modal, Form, Input, Space,
-  Alert, Typography, Popconfirm, Tooltip, message,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Space,
+  Alert,
+  Typography,
+  Popconfirm,
+  Tooltip,
+  message,
 } from 'antd'
 import { PlusOutlined, DeleteOutlined, CopyOutlined, KeyOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
@@ -26,10 +35,11 @@ export default function ApiKeysTab() {
 
   const onCreateSubmit = async (values: CreateApiKeyBody) => {
     const result = await createKey(values)
-    if ('data' in result && result.data.data.key) {
+    const rawKey = 'data' in result ? result.data?.data.key : undefined
+    if (rawKey) {
       form.resetFields()
       setCreateOpen(false)
-      setCreatedKey(result.data.data.key)
+      setCreatedKey(rawKey)
     }
   }
 
@@ -106,9 +116,17 @@ export default function ApiKeysTab() {
 
       {/* Create Modal */}
       <Modal
-        title={<Space><KeyOutlined />Generate API Key</Space>}
+        title={
+          <Space>
+            <KeyOutlined />
+            Generate API Key
+          </Space>
+        }
         open={createOpen}
-        onCancel={() => { setCreateOpen(false); form.resetFields() }}
+        onCancel={() => {
+          setCreateOpen(false)
+          form.resetFields()
+        }}
         footer={null}
         destroyOnClose
       >
@@ -126,8 +144,17 @@ export default function ApiKeysTab() {
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
-              <Button onClick={() => { setCreateOpen(false); form.resetFields() }}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={creating}>Generate</Button>
+              <Button
+                onClick={() => {
+                  setCreateOpen(false)
+                  form.resetFields()
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={creating}>
+                Generate
+              </Button>
             </Space>
           </Form.Item>
         </Form>
@@ -135,10 +162,19 @@ export default function ApiKeysTab() {
 
       {/* Show raw key ONCE */}
       <Modal
-        title={<Space><KeyOutlined /><Text strong>Save your API key</Text></Space>}
+        title={
+          <Space>
+            <KeyOutlined />
+            <Text strong>Save your API key</Text>
+          </Space>
+        }
         open={!!createdKey}
         onCancel={() => setCreatedKey(null)}
-        footer={<Button type="primary" onClick={() => setCreatedKey(null)}>Done</Button>}
+        footer={
+          <Button type="primary" onClick={() => setCreatedKey(null)}>
+            Done
+          </Button>
+        }
         closable={false}
         maskClosable={false}
       >

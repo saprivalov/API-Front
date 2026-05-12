@@ -61,7 +61,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-sm px-4">
         <div className="text-center mb-8">
-          <Title level={2} className="!mb-1">Interview Platform</Title>
+          <Title level={2} className="!mb-1">
+            Interview Platform
+          </Title>
           <Text type="secondary">
             {mode === 'login' ? 'Sign in to your account' : 'Create a new account'}
           </Text>
@@ -109,13 +111,7 @@ export default function LoginPage() {
                 />
               </Form.Item>
               <Form.Item className="!mb-0">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={isLoading}
-                  block
-                  size="large"
-                >
+                <Button type="primary" htmlType="submit" loading={isLoading} block size="large">
                   Sign In
                 </Button>
               </Form.Item>
@@ -187,13 +183,7 @@ export default function LoginPage() {
                 </Select>
               </Form.Item>
               <Form.Item className="!mb-0">
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={isLoading}
-                  block
-                  size="large"
-                >
+                <Button type="primary" htmlType="submit" loading={isLoading} block size="large">
                   Create Account
                 </Button>
               </Form.Item>

@@ -1,7 +1,17 @@
 import { useState } from 'react'
 import {
-  Table, Button, Modal, Form, Input, Select, Tag, Space,
-  Alert, Typography, Popconfirm, Tooltip,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Tag,
+  Space,
+  Alert,
+  Typography,
+  Popconfirm,
+  Tooltip,
 } from 'antd'
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
@@ -90,9 +100,13 @@ export default function InterviewTasksTab() {
       title: 'Created by',
       key: 'creator',
       render: (_, record) =>
-        record.creator
-          ? <Text>{record.creator.name}</Text>
-          : <Text code className="text-xs">{record.createdByUserId.slice(0, 8)}…</Text>,
+        record.creator ? (
+          <Text>{record.creator.name}</Text>
+        ) : (
+          <Text code className="text-xs">
+            {record.createdByUserId.slice(0, 8)}…
+          </Text>
+        ),
     },
     {
       title: 'Date',
@@ -101,35 +115,39 @@ export default function InterviewTasksTab() {
       width: 110,
       render: (date) => new Date(date).toLocaleDateString(),
     },
-    ...(isMentor ? [{
-      title: '',
-      key: 'actions',
-      width: 80,
-      render: (_: unknown, record: InterviewTask) => (
-        <Space>
-          <Tooltip title="Edit">
-            <Button
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setEditTask(record)
-                editForm.setFieldsValue({ title: record.title, level: record.level })
-              }}
-            />
-          </Tooltip>
-          <Popconfirm
-            title="Delete this task?"
-            onConfirm={() => deleteTask(record.id)}
-            okText="Delete"
-            okButtonProps={{ danger: true }}
-          >
-            <Tooltip title="Delete">
-              <Button size="small" icon={<DeleteOutlined />} danger />
-            </Tooltip>
-          </Popconfirm>
-        </Space>
-      ),
-    }] : []),
+    ...(isMentor
+      ? [
+          {
+            title: '',
+            key: 'actions',
+            width: 80,
+            render: (_: unknown, record: InterviewTask) => (
+              <Space>
+                <Tooltip title="Edit">
+                  <Button
+                    size="small"
+                    icon={<EditOutlined />}
+                    onClick={() => {
+                      setEditTask(record)
+                      editForm.setFieldsValue({ title: record.title, level: record.level })
+                    }}
+                  />
+                </Tooltip>
+                <Popconfirm
+                  title="Delete this task?"
+                  onConfirm={() => deleteTask(record.id)}
+                  okText="Delete"
+                  okButtonProps={{ danger: true }}
+                >
+                  <Tooltip title="Delete">
+                    <Button size="small" icon={<DeleteOutlined />} danger />
+                  </Tooltip>
+                </Popconfirm>
+              </Space>
+            ),
+          },
+        ]
+      : []),
   ]
 
   return (
@@ -139,9 +157,7 @@ export default function InterviewTasksTab() {
           placeholder="Search tasks…"
           className="w-56"
           allowClear
-          onSearch={(value) =>
-            setFilters((f) => ({ ...f, search: value || undefined, page: 1 }))
-          }
+          onSearch={(value) => setFilters((f) => ({ ...f, search: value || undefined, page: 1 }))}
         />
         <Select
           placeholder="Level"
@@ -197,8 +213,7 @@ export default function InterviewTasksTab() {
           pageSize: filters.limit,
           total: data?.meta.total,
           showTotal: (total) => `${total} tasks`,
-          onChange: (page, pageSize) =>
-            setFilters((f) => ({ ...f, page, limit: pageSize })),
+          onChange: (page, pageSize) => setFilters((f) => ({ ...f, page, limit: pageSize })),
         }}
       />
 
@@ -206,7 +221,10 @@ export default function InterviewTasksTab() {
       <Modal
         title="Create Interview Task"
         open={createOpen}
-        onCancel={() => { setCreateOpen(false); createForm.resetFields() }}
+        onCancel={() => {
+          setCreateOpen(false)
+          createForm.resetFields()
+        }}
         footer={null}
         destroyOnClose
       >
@@ -215,16 +233,27 @@ export default function InterviewTasksTab() {
             <Input placeholder="Explain event loop in JavaScript" />
           </Form.Item>
           <Form.Item label="Level" name="level" rules={[{ required: true }]}>
-            <Select options={[
-              { value: 'junior', label: 'Junior' },
-              { value: 'middle', label: 'Middle' },
-              { value: 'senior', label: 'Senior' },
-            ]} />
+            <Select
+              options={[
+                { value: 'junior', label: 'Junior' },
+                { value: 'middle', label: 'Middle' },
+                { value: 'senior', label: 'Senior' },
+              ]}
+            />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
-              <Button onClick={() => { setCreateOpen(false); createForm.resetFields() }}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={creating}>Create</Button>
+              <Button
+                onClick={() => {
+                  setCreateOpen(false)
+                  createForm.resetFields()
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={creating}>
+                Create
+              </Button>
             </Space>
           </Form.Item>
         </Form>
@@ -243,16 +272,20 @@ export default function InterviewTasksTab() {
             <Input />
           </Form.Item>
           <Form.Item label="Level" name="level">
-            <Select options={[
-              { value: 'junior', label: 'Junior' },
-              { value: 'middle', label: 'Middle' },
-              { value: 'senior', label: 'Senior' },
-            ]} />
+            <Select
+              options={[
+                { value: 'junior', label: 'Junior' },
+                { value: 'middle', label: 'Middle' },
+                { value: 'senior', label: 'Senior' },
+              ]}
+            />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
               <Button onClick={() => setEditTask(null)}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={updating}>Save</Button>
+              <Button type="primary" htmlType="submit" loading={updating}>
+                Save
+              </Button>
             </Space>
           </Form.Item>
         </Form>

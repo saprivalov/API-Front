@@ -1,7 +1,15 @@
 import { useState } from 'react'
 import {
-  Table, Button, Modal, Form, Select, Tag,
-  Space, Alert, Typography, InputNumber,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Select,
+  Tag,
+  Space,
+  Alert,
+  Typography,
+  InputNumber,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
@@ -48,31 +56,37 @@ export default function SubmissionsTab() {
       title: 'Task',
       key: 'task',
       render: (_, record) =>
-        record.task
-          ? <Text strong>{record.task.title}</Text>
-          : <Text code className="text-xs">{record.taskId.slice(0, 8)}…</Text>,
+        record.task ? (
+          <Text strong>{record.task.title}</Text>
+        ) : (
+          <Text code className="text-xs">
+            {record.taskId.slice(0, 8)}…
+          </Text>
+        ),
     },
     {
       title: 'Level',
       key: 'level',
       width: 90,
       render: (_, record) =>
-        record.task
-          ? <Tag color={levelColors[record.task.level]}>{record.task.level}</Tag>
-          : null,
+        record.task ? <Tag color={levelColors[record.task.level]}>{record.task.level}</Tag> : null,
     },
     {
       title: 'Candidate',
       key: 'user',
       render: (_, record) =>
-        record.user
-          ? (
-            <Space direction="vertical" size={0}>
-              <Text>{record.user.name}</Text>
-              <Text type="secondary" className="text-xs">{record.user.email}</Text>
-            </Space>
-          )
-          : <Text code className="text-xs">{record.userId.slice(0, 8)}…</Text>,
+        record.user ? (
+          <Space direction="vertical" size={0}>
+            <Text>{record.user.name}</Text>
+            <Text type="secondary" className="text-xs">
+              {record.user.email}
+            </Text>
+          </Space>
+        ) : (
+          <Text code className="text-xs">
+            {record.userId.slice(0, 8)}…
+          </Text>
+        ),
     },
     {
       title: 'Status',
@@ -87,9 +101,14 @@ export default function SubmissionsTab() {
       key: 'score',
       width: 90,
       render: (score) =>
-        score !== null && score !== undefined
-          ? <Text strong>{score}<Text type="secondary">/100</Text></Text>
-          : <Text type="secondary">—</Text>,
+        score !== null && score !== undefined ? (
+          <Text strong>
+            {score}
+            <Text type="secondary">/100</Text>
+          </Text>
+        ) : (
+          <Text type="secondary">—</Text>
+        ),
     },
     {
       title: 'Submitted',
@@ -100,10 +119,11 @@ export default function SubmissionsTab() {
     },
   ]
 
-  const taskOptions = tasksData?.data.map((t) => ({
-    value: t.id,
-    label: t.title,
-  })) ?? []
+  const taskOptions =
+    tasksData?.data.map((t) => ({
+      value: t.id,
+      label: t.title,
+    })) ?? []
 
   return (
     <div>
@@ -114,7 +134,9 @@ export default function SubmissionsTab() {
         </Button>
       </div>
 
-      {error && <Alert type="error" message="Failed to load submissions" className="mb-4" showIcon />}
+      {error && (
+        <Alert type="error" message="Failed to load submissions" className="mb-4" showIcon />
+      )}
 
       <Table
         columns={columns}
@@ -128,12 +150,19 @@ export default function SubmissionsTab() {
       <Modal
         title="Create Submission"
         open={open}
-        onCancel={() => { setOpen(false); form.resetFields() }}
+        onCancel={() => {
+          setOpen(false)
+          form.resetFields()
+        }}
         footer={null}
         destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={onSubmit} className="pt-2">
-          <Form.Item label="Task" name="taskId" rules={[{ required: true, message: 'Select a task' }]}>
+          <Form.Item
+            label="Task"
+            name="taskId"
+            rules={[{ required: true, message: 'Select a task' }]}
+          >
             <Select
               showSearch
               placeholder="Select a task"
@@ -142,18 +171,29 @@ export default function SubmissionsTab() {
             />
           </Form.Item>
           <Form.Item label="Status" name="status" initialValue="pending">
-            <Select options={[
-              { value: 'pending', label: 'Pending' },
-              { value: 'reviewed', label: 'Reviewed' },
-            ]} />
+            <Select
+              options={[
+                { value: 'pending', label: 'Pending' },
+                { value: 'reviewed', label: 'Reviewed' },
+              ]}
+            />
           </Form.Item>
           <Form.Item label="Score (optional)" name="score">
             <InputNumber min={0} max={100} className="w-full" placeholder="0–100" />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
-              <Button onClick={() => { setOpen(false); form.resetFields() }}>Cancel</Button>
-              <Button type="primary" htmlType="submit" loading={creating}>Submit</Button>
+              <Button
+                onClick={() => {
+                  setOpen(false)
+                  form.resetFields()
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary" htmlType="submit" loading={creating}>
+                Submit
+              </Button>
             </Space>
           </Form.Item>
         </Form>
