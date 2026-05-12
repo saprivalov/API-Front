@@ -61,7 +61,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-sm px-4">
         <div className="text-center mb-8">
-          <Title level={2} className="!mb-1">
+          <Title level={2} className="!mb-1 !text-purple-600">
             Interview Platform
           </Title>
           <Text type="secondary">
