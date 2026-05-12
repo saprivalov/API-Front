@@ -2,11 +2,24 @@ import { z } from 'zod'
 
 export const TaskLevelSchema = z.enum(['junior', 'middle', 'senior'])
 
+const TagSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+})
+
+const CreatorSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  email: z.string(),
+})
+
 export const InterviewTaskSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
   level: TaskLevelSchema,
   createdByUserId: z.string().uuid(),
+  creator: CreatorSchema.optional().nullable(),
+  taskTags: z.array(z.object({ tag: TagSchema })).optional().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 })

@@ -8,6 +8,16 @@ export const SubmissionSchema = z.object({
   userId: z.string().uuid(),
   status: SubmissionStatusSchema,
   score: z.number().int().min(0).max(100).nullable(),
+  task: z.object({
+    id: z.string().uuid(),
+    title: z.string(),
+    level: z.string(),
+  }).optional().nullable(),
+  user: z.object({
+    id: z.string().uuid(),
+    name: z.string(),
+    email: z.string(),
+  }).optional().nullable(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 })

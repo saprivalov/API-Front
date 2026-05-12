@@ -28,7 +28,7 @@ const levelColors: Record<string, string> = {
   senior: 'red',
 }
 
-type TaskFormValues = CreateInterviewTaskBody
+const tagColors = ['blue', 'geekblue', 'purple', 'cyan', 'teal']
 
 export default function InterviewTasksTab() {
   const auth = useAuth()
@@ -37,7 +37,7 @@ export default function InterviewTasksTab() {
   const [filters, setFilters] = useState<GetTasksQuery>({ page: 1, limit: 10 })
   const [createOpen, setCreateOpen] = useState(false)
   const [editTask, setEditTask] = useState<InterviewTask | null>(null)
-  const [createForm] = Form.useForm<TaskFormValues>()
+  const [createForm] = Form.useForm<CreateInterviewTaskBody>()
   const [editForm] = Form.useForm<UpdateInterviewTaskBody>()
 
   const { data, isLoading, error } = useGetInterviewTasksQuery(filters)
@@ -45,8 +45,8 @@ export default function InterviewTasksTab() {
   const [updateTask, { isLoading: updating }] = useUpdateInterviewTaskMutation()
   const [deleteTask] = useDeleteInterviewTaskMutation()
 
-  const onCreateSubmit = async (values: TaskFormValues) => {
-    const result = await createTask(values)
+  const onCreateSubmit = async (values: CreateInterviewTaskBody) => {
+    const result = await createTask({ ...values, createdByUserId: auth?.userId ?? '' })
     if ('data' in result) {
       createForm.resetFields()
       setCreateOpen(false)
@@ -56,13 +56,7 @@ export default function InterviewTasksTab() {
   const onEditSubmit = async (values: UpdateInterviewTaskBody) => {
     if (!editTask) return
     const result = await updateTask({ id: editTask.id, ...values })
-    if ('data' in result) {
-      setEditTask(null)
-    }
-  }
-
-  const onDelete = async (id: string) => {
-    await deleteTask(id)
+    if ('data' in result) setEditTask(null)
   }
 
   const columns: ColumnsType<InterviewTask> = [
@@ -76,25 +70,41 @@ export default function InterviewTasksTab() {
       title: 'Level',
       dataIndex: 'level',
       key: 'level',
-      render: (level) => (
-        <Tag color={levelColors[level]}>{level}</Tag>
+      width: 90,
+      render: (level) => <Tag color={levelColors[level]}>{level}</Tag>,
+    },
+    {
+      title: 'Tags',
+      key: 'tags',
+      render: (_, record) => (
+        <Space size={4} wrap>
+          {record.taskTags?.map(({ tag }, i) => (
+            <Tag key={tag.id} color={tagColors[i % tagColors.length]} className="!m-0">
+              {tag.name}
+            </Tag>
+          )) ?? <Text type="secondary">—</Text>}
+        </Space>
       ),
     },
     {
       title: 'Created by',
-      dataIndex: 'createdByUserId',
-      key: 'createdByUserId',
-      render: (id) => <Text code className="text-xs">{id.slice(0, 8)}…</Text>,
+      key: 'creator',
+      render: (_, record) =>
+        record.creator
+          ? <Text>{record.creator.name}</Text>
+          : <Text code className="text-xs">{record.createdByUserId.slice(0, 8)}…</Text>,
     },
     {
       title: 'Date',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 110,
       render: (date) => new Date(date).toLocaleDateString(),
     },
     ...(isMentor ? [{
-      title: 'Actions',
+      title: '',
       key: 'actions',
+      width: 80,
       render: (_: unknown, record: InterviewTask) => (
         <Space>
           <Tooltip title="Edit">
@@ -109,7 +119,7 @@ export default function InterviewTasksTab() {
           </Tooltip>
           <Popconfirm
             title="Delete this task?"
-            onConfirm={() => onDelete(record.id)}
+            onConfirm={() => deleteTask(record.id)}
             okText="Delete"
             okButtonProps={{ danger: true }}
           >
@@ -142,9 +152,7 @@ export default function InterviewTasksTab() {
             { value: 'middle', label: 'Middle' },
             { value: 'senior', label: 'Senior' },
           ]}
-          onChange={(value) =>
-            setFilters((f) => ({ ...f, level: value, page: 1 }))
-          }
+          onChange={(value) => setFilters((f) => ({ ...f, level: value, page: 1 }))}
         />
         <Select
           className="w-36"
@@ -203,11 +211,7 @@ export default function InterviewTasksTab() {
         destroyOnClose
       >
         <Form form={createForm} layout="vertical" onFinish={onCreateSubmit} className="pt-2">
-          <Form.Item
-            label="Title"
-            name="title"
-            rules={[{ required: true, min: 5, max: 150 }]}
-          >
+          <Form.Item label="Title" name="title" rules={[{ required: true, min: 5, max: 150 }]}>
             <Input placeholder="Explain event loop in JavaScript" />
           </Form.Item>
           <Form.Item label="Level" name="level" rules={[{ required: true }]}>
@@ -216,14 +220,6 @@ export default function InterviewTasksTab() {
               { value: 'middle', label: 'Middle' },
               { value: 'senior', label: 'Senior' },
             ]} />
-          </Form.Item>
-          <Form.Item
-            label="Creator User ID"
-            name="createdByUserId"
-            rules={[{ required: true }]}
-            extra={<Text type="secondary" className="text-xs">UUID of the mentor creating this task</Text>}
-          >
-            <Input placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">

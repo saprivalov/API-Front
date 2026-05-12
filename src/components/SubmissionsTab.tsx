@@ -6,7 +6,9 @@ import {
 import { PlusOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import { useGetSubmissionsQuery, useCreateSubmissionMutation } from '../api/submissions.api'
+import { useGetInterviewTasksQuery } from '../api/interview-tasks.api'
 import type { Submission, CreateSubmissionBody } from '../schemas/submission.schemas'
+import { useAuth } from '../hooks/useAuth'
 
 const { Text } = Typography
 
@@ -15,14 +17,26 @@ const statusColors: Record<string, string> = {
   reviewed: 'green',
 }
 
+const levelColors: Record<string, string> = {
+  junior: 'green',
+  middle: 'orange',
+  senior: 'red',
+}
+
 export default function SubmissionsTab() {
+  const auth = useAuth()
   const [open, setOpen] = useState(false)
   const [form] = Form.useForm<CreateSubmissionBody>()
+
   const { data, isLoading, error } = useGetSubmissionsQuery()
+  const { data: tasksData } = useGetInterviewTasksQuery({ page: 1, limit: 100 })
   const [createSubmission, { isLoading: creating }] = useCreateSubmissionMutation()
 
   const onSubmit = async (values: CreateSubmissionBody) => {
-    const result = await createSubmission(values)
+    const result = await createSubmission({
+      ...values,
+      userId: auth?.userId ?? '',
+    })
     if ('data' in result) {
       form.resetFields()
       setOpen(false)
@@ -31,39 +45,65 @@ export default function SubmissionsTab() {
 
   const columns: ColumnsType<Submission> = [
     {
-      title: 'Task ID',
-      dataIndex: 'taskId',
-      key: 'taskId',
-      render: (id) => <Text code className="text-xs">{id.slice(0, 8)}…</Text>,
+      title: 'Task',
+      key: 'task',
+      render: (_, record) =>
+        record.task
+          ? <Text strong>{record.task.title}</Text>
+          : <Text code className="text-xs">{record.taskId.slice(0, 8)}…</Text>,
     },
     {
-      title: 'User ID',
-      dataIndex: 'userId',
-      key: 'userId',
-      render: (id) => <Text code className="text-xs">{id.slice(0, 8)}…</Text>,
+      title: 'Level',
+      key: 'level',
+      width: 90,
+      render: (_, record) =>
+        record.task
+          ? <Tag color={levelColors[record.task.level]}>{record.task.level}</Tag>
+          : null,
+    },
+    {
+      title: 'Candidate',
+      key: 'user',
+      render: (_, record) =>
+        record.user
+          ? (
+            <Space direction="vertical" size={0}>
+              <Text>{record.user.name}</Text>
+              <Text type="secondary" className="text-xs">{record.user.email}</Text>
+            </Space>
+          )
+          : <Text code className="text-xs">{record.userId.slice(0, 8)}…</Text>,
     },
     {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
+      width: 100,
       render: (status) => <Tag color={statusColors[status]}>{status}</Tag>,
     },
     {
       title: 'Score',
       dataIndex: 'score',
       key: 'score',
+      width: 90,
       render: (score) =>
-        score !== null
+        score !== null && score !== undefined
           ? <Text strong>{score}<Text type="secondary">/100</Text></Text>
           : <Text type="secondary">—</Text>,
     },
     {
-      title: 'Created',
+      title: 'Submitted',
       dataIndex: 'createdAt',
       key: 'createdAt',
+      width: 110,
       render: (date) => new Date(date).toLocaleDateString(),
     },
   ]
+
+  const taskOptions = tasksData?.data.map((t) => ({
+    value: t.id,
+    label: t.title,
+  })) ?? []
 
   return (
     <div>
@@ -93,11 +133,13 @@ export default function SubmissionsTab() {
         destroyOnClose
       >
         <Form form={form} layout="vertical" onFinish={onSubmit} className="pt-2">
-          <Form.Item label="Task ID" name="taskId" rules={[{ required: true }]}>
-            <Input placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-          </Form.Item>
-          <Form.Item label="User ID" name="userId" rules={[{ required: true }]}>
-            <Input placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+          <Form.Item label="Task" name="taskId" rules={[{ required: true, message: 'Select a task' }]}>
+            <Select
+              showSearch
+              placeholder="Select a task"
+              optionFilterProp="label"
+              options={taskOptions}
+            />
           </Form.Item>
           <Form.Item label="Status" name="status" initialValue="pending">
             <Select options={[
