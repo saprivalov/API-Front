@@ -39,7 +39,7 @@ export default function DashboardPage() {
         <Text strong className="text-lg">Interview Platform</Text>
         <Space>
           <UserOutlined className="text-gray-500" />
-          <Text type="secondary" className="text-sm">{auth?.userId?.slice(0, 8)}…</Text>
+          <Text type="secondary" className="text-sm">{auth?.userId?.slice(0, 8)}</Text>
           <Tag color={isMentor ? 'purple' : 'blue'}>{auth?.role}</Tag>
           <Button
             icon={<LogoutOutlined />}
