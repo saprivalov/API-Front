@@ -15,7 +15,7 @@ import {
   Descriptions,
   Badge,
 } from 'antd'
-import { PlusOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons'
+import { PlusOutlined, DeleteOutlined, EyeOutlined, RobotOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
 import {
   useGetAgentTasksQuery,
@@ -60,8 +60,13 @@ export default function AgentTasksTab() {
   const [createTask, { isLoading: creating }] = useCreateAgentTaskMutation()
   const [deleteTask] = useDeleteAgentTaskMutation()
 
-  const onCreateSubmit = async (values: CreateAgentTaskBody) => {
-    const result = await createTask(values)
+  const onCreateSubmit = async (values: CreateAgentTaskBody & { assignTo?: string }) => {
+    const { assignTo, ...rest } = values
+    const payload: CreateAgentTaskBody = {
+      ...rest,
+      ...(assignTo ? { metadata: { agent: assignTo } } : {}),
+    }
+    const result = await createTask(payload)
     if ('data' in result) {
       form.resetFields()
       setCreateOpen(false)
@@ -93,16 +98,26 @@ export default function AgentTasksTab() {
     },
     {
       title: 'Agent',
-      dataIndex: 'agentId',
       key: 'agentId',
-      render: (agentId) =>
-        agentId ? (
-          <Text code className="text-xs">
-            {agentId}
-          </Text>
-        ) : (
-          <Text type="secondary">—</Text>
-        ),
+      render: (_, record) => {
+        const active = record.agentId
+        const assigned = record.metadata?.agent as string | undefined
+        if (active)
+          return (
+            <Text code className="text-xs">
+              {active}
+            </Text>
+          )
+        if (assigned)
+          return (
+            <Tooltip title="Assigned — waiting to be picked up">
+              <Tag icon={<RobotOutlined />} color="purple" className="!m-0">
+                {assigned}
+              </Tag>
+            </Tooltip>
+          )
+        return <Text type="secondary">—</Text>
+      },
     },
     {
       title: 'Created by',
@@ -213,6 +228,15 @@ export default function AgentTasksTab() {
           <Form.Item label="Description" name="description">
             <TextArea rows={3} placeholder="Optional detailed instructions for the agent" />
           </Form.Item>
+          <Form.Item label="Assign to agent" name="assignTo">
+            <Select
+              allowClear
+              placeholder="Auto-assign to a Claude agent"
+              options={[
+                { value: 'JohnFrontendMcClane', label: '🤖 JohnFrontendMcClane (Frontend)' },
+              ]}
+            />
+          </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
               <Button
@@ -263,9 +287,24 @@ export default function AgentTasksTab() {
             )}
             {detailTask.result && (
               <Descriptions.Item label="Result">
-                <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-48">
-                  {JSON.stringify(detailTask.result, null, 2)}
-                </pre>
+                {(detailTask.result as Record<string, unknown>).pr_url ? (
+                  <Space direction="vertical" size={4}>
+                    <a
+                      href={String((detailTask.result as Record<string, unknown>).pr_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      🔗 Open Pull Request
+                    </a>
+                    <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-36">
+                      {JSON.stringify(detailTask.result, null, 2)}
+                    </pre>
+                  </Space>
+                ) : (
+                  <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto max-h-48">
+                    {JSON.stringify(detailTask.result, null, 2)}
+                  </pre>
+                )}
               </Descriptions.Item>
             )}
             <Descriptions.Item label="Created">

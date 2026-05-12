@@ -40,6 +40,7 @@ export const GetAgentTasksQuerySchema = z.object({
 export const CreateAgentTaskBodySchema = z.object({
   title: z.string().min(3).max(200),
   description: z.string().max(2000).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 })
 
 export type AgentTaskStatus = z.infer<typeof AgentTaskStatusSchema>
