@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  Table, Button, Modal, Form, Input, Select, Tag,
+  Table, Button, Modal, Form, Select, Tag,
   Space, Alert, Typography, InputNumber,
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
