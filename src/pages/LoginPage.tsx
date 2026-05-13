@@ -180,6 +180,7 @@ export default function LoginPage() {
                 <Select size="large">
                   <Select.Option value="candidate">Candidate</Select.Option>
                   <Select.Option value="mentor">Mentor</Select.Option>
+                  <Select.Option value="robot">Robot</Select.Option>
                 </Select>
               </Form.Item>
               <Form.Item className="!mb-0">

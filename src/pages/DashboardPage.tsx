@@ -15,6 +15,12 @@ import ApiKeysTab from '../components/ApiKeysTab'
 const { Header, Content } = Layout
 const { Text } = Typography
 
+const roleTagColor: Record<string, string> = {
+  mentor: 'purple',
+  candidate: 'blue',
+  robot: 'cyan',
+}
+
 export default function DashboardPage() {
   const dispatch = useDispatch()
   const auth = useAuth()
@@ -102,7 +108,9 @@ export default function DashboardPage() {
               </Button>
             </>
           )}
-          <Tag color={isMentor ? 'purple' : 'blue'}>{auth?.role}</Tag>
+          <Tag color={auth?.role ? (roleTagColor[auth.role] ?? 'default') : 'default'}>
+            {auth?.role}
+          </Tag>
           <Button icon={<LogoutOutlined />} onClick={() => dispatch(clearTokens())} size="small">
             Logout
           </Button>

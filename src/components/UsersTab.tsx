@@ -10,6 +10,7 @@ const { Text } = Typography
 const roleColors: Record<string, string> = {
   mentor: 'purple',
   candidate: 'blue',
+  robot: 'cyan',
 }
 
 export default function UsersTab() {
@@ -110,6 +111,7 @@ export default function UsersTab() {
               options={[
                 { value: 'candidate', label: 'Candidate' },
                 { value: 'mentor', label: 'Mentor' },
+                { value: 'robot', label: 'Robot' },
               ]}
             />
           </Form.Item>
