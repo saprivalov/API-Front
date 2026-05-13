@@ -1,9 +1,10 @@
 import { useSelector } from 'react-redux'
 import type { RootState } from '../store'
+import type { Role } from '../schemas/user.schemas'
 
 interface AuthPayload {
   userId: string
-  role: 'candidate' | 'mentor'
+  role: Role
 }
 
 export function useAuth(): AuthPayload | null {

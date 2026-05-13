@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const RoleSchema = z.enum(['candidate', 'mentor'])
+export const RoleSchema = z.enum(['candidate', 'mentor', 'robot'])
 
 export const UserSchema = z.object({
   id: z.string().uuid(),

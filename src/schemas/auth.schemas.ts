@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { RoleSchema } from './user.schemas'
 
 export const TokensSchema = z.object({
   accessToken: z.string(),
@@ -9,7 +10,7 @@ export const PublicUserSchema = z.object({
   id: z.string(),
   email: z.string(),
   name: z.string(),
-  role: z.enum(['candidate', 'mentor']),
+  role: RoleSchema,
   createdAt: z.string(),
   updatedAt: z.string(),
 })
@@ -37,7 +38,7 @@ export const RegisterBodySchema = z.object({
     .regex(/[A-Za-z]/, 'Must include a letter')
     .regex(/[0-9]/, 'Must include a digit'),
   name: z.string().min(2, 'At least 2 characters'),
-  role: z.enum(['candidate', 'mentor']),
+  role: RoleSchema,
 })
 
 export const RefreshBodySchema = z.object({
