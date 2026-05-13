@@ -1,8 +1,16 @@
 import { useState } from 'react'
 import { Layout, Tabs, Button, Tag, Typography, Space, Avatar, Spin } from 'antd'
-import { LogoutOutlined, UserOutlined, EditOutlined } from '@ant-design/icons'
-import { useDispatch } from 'react-redux'
+import {
+  LogoutOutlined,
+  UserOutlined,
+  EditOutlined,
+  MoonOutlined,
+  SunOutlined,
+} from '@ant-design/icons'
+import { useDispatch, useSelector } from 'react-redux'
 import { clearTokens } from '../store/auth.slice'
+import { toggleTheme } from '../store/theme.slice'
+import type { RootState } from '../store'
 import { useAuth } from '../hooks/useAuth'
 import { useGetMeQuery } from '../api/users.api'
 import ProfileModal from '../components/ProfileModal'
@@ -23,6 +31,7 @@ const roleTagColor: Record<string, string> = {
 
 export default function DashboardPage() {
   const dispatch = useDispatch()
+  const isDark = useSelector((state: RootState) => state.theme.isDark)
   const auth = useAuth()
   const isMentor = auth?.role === 'mentor'
   const [profileOpen, setProfileOpen] = useState(false)
@@ -63,8 +72,8 @@ export default function DashboardPage() {
   ]
 
   return (
-    <Layout className="min-h-screen bg-gray-50">
-      <Header className="flex items-center justify-between px-6 !bg-white border-b border-gray-200 shadow-sm">
+    <Layout className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Header className="flex items-center justify-between px-6 !bg-white dark:!bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <Text strong className="text-lg !text-purple-600">
           The Orchestra of Agents
         </Text>
@@ -111,6 +120,11 @@ export default function DashboardPage() {
           <Tag color={auth?.role ? (roleTagColor[auth.role] ?? 'default') : 'default'}>
             {auth?.role}
           </Tag>
+          <Button
+            icon={isDark ? <SunOutlined /> : <MoonOutlined />}
+            onClick={() => dispatch(toggleTheme())}
+            size="small"
+          />
           <Button icon={<LogoutOutlined />} onClick={() => dispatch(clearTokens())} size="small">
             Logout
           </Button>
@@ -118,7 +132,7 @@ export default function DashboardPage() {
       </Header>
 
       <Content className="p-6">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
           <Tabs defaultActiveKey="agent-tasks" items={tabs} />
         </div>
       </Content>
