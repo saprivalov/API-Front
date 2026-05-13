@@ -1,8 +1,11 @@
-import { Layout, Tabs, Button, Tag, Typography, Space } from 'antd'
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import { Layout, Tabs, Button, Tag, Typography, Space, Avatar, Spin } from 'antd'
+import { LogoutOutlined, UserOutlined, EditOutlined } from '@ant-design/icons'
 import { useDispatch } from 'react-redux'
 import { clearTokens } from '../store/auth.slice'
 import { useAuth } from '../hooks/useAuth'
+import { useGetMeQuery } from '../api/users.api'
+import ProfileModal from '../components/ProfileModal'
 // import InterviewTasksTab from '../components/InterviewTasksTab' // temporarily hidden
 import UsersTab from '../components/UsersTab'
 // import SubmissionsTab from '../components/SubmissionsTab' // temporarily hidden
@@ -16,6 +19,9 @@ export default function DashboardPage() {
   const dispatch = useDispatch()
   const auth = useAuth()
   const isMentor = auth?.role === 'mentor'
+  const [profileOpen, setProfileOpen] = useState(false)
+  const { data: meData, isLoading: meLoading, isError: meError } = useGetMeQuery()
+  const me = meData?.data
 
   const tabs = [
     // temporarily hidden — see task "Скрыть Interview Tasks и Submitions блоки"
@@ -56,11 +62,46 @@ export default function DashboardPage() {
         <Text strong className="text-lg !text-purple-600">
           The Orchestra of Agents
         </Text>
-        <Space>
-          <UserOutlined className="text-gray-500" />
-          <Text type="secondary" className="text-sm">
-            {auth?.userId?.slice(0, 8)}
-          </Text>
+        <Space align="center" size="middle" wrap>
+          {meLoading ? (
+            <Spin size="small" />
+          ) : meError ? (
+            <>
+              <UserOutlined className="text-gray-500" />
+              <Text type="secondary" className="text-sm">
+                {auth?.userId?.slice(0, 8)}
+              </Text>
+              <Text type="danger" className="text-xs">
+                Profile unavailable
+              </Text>
+            </>
+          ) : (
+            <>
+              <Avatar
+                src={me?.avatar ?? undefined}
+                size={36}
+                className="bg-purple-100 text-purple-700 shrink-0"
+              >
+                {(me?.name ?? '').trim().slice(0, 1).toUpperCase() || <UserOutlined />}
+              </Avatar>
+              <div className="flex flex-col items-start min-w-0 max-w-[200px]">
+                <Text strong className="text-sm truncate w-full">
+                  {me?.name}
+                </Text>
+                <Text type="secondary" className="text-xs truncate w-full">
+                  {me?.email}
+                </Text>
+              </div>
+              <Button
+                type="default"
+                size="small"
+                icon={<EditOutlined />}
+                onClick={() => setProfileOpen(true)}
+              >
+                Edit
+              </Button>
+            </>
+          )}
           <Tag color={isMentor ? 'purple' : 'blue'}>{auth?.role}</Tag>
           <Button icon={<LogoutOutlined />} onClick={() => dispatch(clearTokens())} size="small">
             Logout
@@ -73,6 +114,8 @@ export default function DashboardPage() {
           <Tabs defaultActiveKey="agent-tasks" items={tabs} />
         </div>
       </Content>
+
+      {me && <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} user={me} />}
     </Layout>
   )
 }
