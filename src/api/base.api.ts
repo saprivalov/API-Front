@@ -25,7 +25,7 @@ const baseQueryWithAuth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQuery
   extraOptions,
 ) => {
   const result = await rawBaseQuery(args, api, extraOptions)
-  if (result.error?.status === 401) {
+  if (result.error?.status === 401 || result.error?.status === 403) {
     api.dispatch(clearTokens())
   }
   return result
