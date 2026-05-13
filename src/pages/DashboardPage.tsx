@@ -124,6 +124,7 @@ export default function DashboardPage() {
             icon={isDark ? <SunOutlined /> : <MoonOutlined />}
             onClick={() => dispatch(toggleTheme())}
             size="small"
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           />
           <Button icon={<LogoutOutlined />} onClick={() => dispatch(clearTokens())} size="small">
             Logout
