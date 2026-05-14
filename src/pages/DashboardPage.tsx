@@ -19,6 +19,7 @@ import UsersTab from '../components/UsersTab'
 // import SubmissionsTab from '../components/SubmissionsTab' // temporarily hidden
 import AgentTasksTab from '../components/AgentTasksTab'
 import ApiKeysTab from '../components/ApiKeysTab'
+import GlobeTab from '../components/GlobeTab'
 
 const { Header, Content } = Layout
 const { Text } = Typography
@@ -54,6 +55,11 @@ export default function DashboardPage() {
       key: 'agent-tasks',
       label: 'Agent Tasks',
       children: <AgentTasksTab />,
+    },
+    {
+      key: 'globe',
+      label: 'Глобус',
+      children: <GlobeTab />,
     },
     ...(isMentor
       ? [

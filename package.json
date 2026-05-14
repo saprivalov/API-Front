@@ -19,10 +19,12 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/vite": "^4.2.4",
     "antd": "^6.3.7",
+    "cesium": "^1.141.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.15.0",
+    "resium": "^1.21.1",
     "tailwindcss": "^4.2.4",
     "zod": "^4.4.3"
   },
@@ -55,6 +57,7 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.2",
     "vite": "^8.0.10",
+    "vite-plugin-cesium": "^1.2.23",
     "vitest": "^4.1.6"
   }
 }
