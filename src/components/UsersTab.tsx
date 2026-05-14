@@ -9,7 +9,7 @@ const { Text } = Typography
 
 const roleColors: Record<string, string> = {
   mentor: 'purple',
-  candidate: 'blue',
+  candidate: 'green',
   robot: 'cyan',
 }
 
