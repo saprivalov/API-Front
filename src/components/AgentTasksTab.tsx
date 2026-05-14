@@ -34,7 +34,7 @@ const { Text } = Typography
 const { TextArea } = Input
 
 const STATUS_COLOR: Record<AgentTaskStatus, string> = {
-  pending: 'blue',
+  pending: '#166534',
   in_progress: 'orange',
   completed: 'green',
   failed: 'red',

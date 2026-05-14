@@ -25,7 +25,7 @@ const { Text } = Typography
 
 const roleTagColor: Record<string, string> = {
   mentor: 'purple',
-  candidate: 'blue',
+  candidate: 'green',
   robot: 'cyan',
 }
 

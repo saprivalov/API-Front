@@ -38,7 +38,7 @@ const levelColors: Record<string, string> = {
   senior: 'red',
 }
 
-const tagColors = ['blue', 'geekblue', 'purple', 'cyan', 'teal']
+const tagColors = ['green', 'geekblue', 'purple', 'cyan', 'teal']
 
 export default function InterviewTasksTab() {
   const auth = useAuth()
