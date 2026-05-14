@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <script>
-      // GitHub Pages SPA redirect: preserve path in sessionStorage and redirect to index
+      var base = location.pathname.startsWith('/API-Front/dev') ? '/API-Front/dev/' : '/API-Front/'
       sessionStorage.setItem('spa_redirect', location.pathname + location.search + location.hash)
-      location.replace('/API-Front/')
+      location.replace(base)
     </script>
   </head>
   <body></body>
