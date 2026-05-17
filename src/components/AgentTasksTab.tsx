@@ -234,6 +234,8 @@ export default function AgentTasksTab() {
               placeholder="Auto-assign to a Claude agent"
               options={[
                 { value: 'JohnFrontendMcClane', label: '🤖 JohnFrontendMcClane (Frontend)' },
+                { value: 'JohnBackendMcClane', label: '⚙️ JohnBackendMcClane (Backend)' },
+                { value: 'JohnTesterMcClane', label: '🧪 JohnTesterMcClane (Tester)' },
               ]}
             />
           </Form.Item>

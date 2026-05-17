@@ -17,7 +17,7 @@ export default function App() {
     <ConfigProvider
       theme={{
         algorithm: isDark ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
-        token: { colorPrimary: '#7c3aed' },
+        token: { colorPrimary: '#16a34a' },
       }}
     >
       {accessToken ? <DashboardPage /> : <LoginPage />}
