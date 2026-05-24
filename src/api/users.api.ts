@@ -43,8 +43,23 @@ export const usersApi = baseApi.injectEndpoints({
       transformResponse: (raw) => MeResponseSchema.parse(raw),
       invalidatesTags: [{ type: 'User', id: 'ME' }, 'User'],
     }),
+
+    patchUserRole: build.mutation<UserResponse, { id: string; role: string }>({
+      query: ({ id, role }) => ({
+        url: `/users/${id}/role`,
+        method: 'PATCH',
+        body: { role },
+      }),
+      transformResponse: (raw) => UserResponseSchema.parse(raw),
+      invalidatesTags: ['User'],
+    }),
   }),
 })
 
-export const { useGetUsersQuery, useGetMeQuery, useCreateUserMutation, useUpdateMeMutation } =
-  usersApi
+export const {
+  useGetUsersQuery,
+  useGetMeQuery,
+  useCreateUserMutation,
+  useUpdateMeMutation,
+  usePatchUserRoleMutation,
+} = usersApi

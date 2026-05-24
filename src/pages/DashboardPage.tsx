@@ -24,6 +24,7 @@ const { Header, Content } = Layout
 const { Text } = Typography
 
 const roleTagColor: Record<string, string> = {
+  admin: 'red',
   mentor: 'purple',
   candidate: 'green',
   robot: 'cyan',
@@ -34,6 +35,7 @@ export default function DashboardPage() {
   const isDark = useSelector((state: RootState) => state.theme.isDark)
   const auth = useAuth()
   const isMentor = auth?.role === 'mentor'
+  const isAdmin = auth?.role === 'admin'
   const [profileOpen, setProfileOpen] = useState(false)
   const { data: meData, isLoading: meLoading, isError: meError } = useGetMeQuery()
   const me = meData?.data
@@ -55,7 +57,7 @@ export default function DashboardPage() {
       label: 'Agent Tasks',
       children: <AgentTasksTab />,
     },
-    ...(isMentor
+    ...(isMentor || isAdmin
       ? [
           {
             key: 'users',
