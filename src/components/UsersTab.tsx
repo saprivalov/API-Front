@@ -2,22 +2,35 @@ import { useState } from 'react'
 import { Table, Button, Modal, Form, Input, Select, Tag, Space, Alert, Typography } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
-import { useGetUsersQuery, useCreateUserMutation } from '../api/users.api'
+import { useGetUsersQuery, useCreateUserMutation, usePatchUserRoleMutation } from '../api/users.api'
 import type { User, CreateUserBody } from '../schemas/user.schemas'
+import { useAuth } from '../hooks/useAuth'
 
 const { Text } = Typography
 
 const roleColors: Record<string, string> = {
+  admin: 'red',
   mentor: 'purple',
   candidate: 'green',
   robot: 'cyan',
 }
+
+const roleOptions = [
+  { value: 'candidate', label: 'Candidate' },
+  { value: 'mentor', label: 'Mentor' },
+  { value: 'robot', label: 'Robot' },
+  { value: 'admin', label: 'Admin' },
+]
 
 export default function UsersTab() {
   const [open, setOpen] = useState(false)
   const [form] = Form.useForm<CreateUserBody>()
   const { data, isLoading, error } = useGetUsersQuery()
   const [createUser, { isLoading: creating }] = useCreateUserMutation()
+  const [patchUserRole] = usePatchUserRoleMutation()
+  const auth = useAuth()
+  const isAdmin = auth?.role === 'admin'
+  const currentUserId = auth?.userId
 
   const onSubmit = async (values: CreateUserBody) => {
     const result = await createUser(values)
@@ -67,6 +80,25 @@ export default function UsersTab() {
       width: 110,
       render: (date) => new Date(date).toLocaleDateString(),
     },
+    ...(isAdmin
+      ? [
+          {
+            title: 'Actions',
+            key: 'actions',
+            width: 150,
+            render: (_: unknown, record: User) => (
+              <Select
+                defaultValue={record.role}
+                options={roleOptions}
+                disabled={record.id === currentUserId}
+                onChange={(role: string) => patchUserRole({ id: record.id, role })}
+                style={{ width: 130 }}
+                size="small"
+              />
+            ),
+          },
+        ]
+      : []),
   ]
 
   return (
@@ -107,13 +139,7 @@ export default function UsersTab() {
             <Input placeholder="Full Name" />
           </Form.Item>
           <Form.Item label="Role" name="role" initialValue="candidate">
-            <Select
-              options={[
-                { value: 'candidate', label: 'Candidate' },
-                { value: 'mentor', label: 'Mentor' },
-                { value: 'robot', label: 'Robot' },
-              ]}
-            />
+            <Select options={roleOptions} />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
