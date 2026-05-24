@@ -22,6 +22,8 @@ const roleOptions = [
   { value: 'admin', label: 'Admin' },
 ]
 
+const createRoleOptions = roleOptions.filter((o) => o.value !== 'admin')
+
 export default function UsersTab() {
   const [open, setOpen] = useState(false)
   const [form] = Form.useForm<CreateUserBody>()
@@ -139,7 +141,7 @@ export default function UsersTab() {
             <Input placeholder="Full Name" />
           </Form.Item>
           <Form.Item label="Role" name="role" initialValue="candidate">
-            <Select options={roleOptions} />
+            <Select options={createRoleOptions} />
           </Form.Item>
           <Form.Item className="!mb-0">
             <Space className="w-full justify-end">
