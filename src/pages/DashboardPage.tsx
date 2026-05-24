@@ -1,24 +1,26 @@
 import { useState } from 'react'
-import { Layout, Tabs, Button, Tag, Typography, Space, Avatar, Spin } from 'antd'
+import { Layout, Tabs, Button, Tag, Typography, Space, Avatar, Spin, Select } from 'antd'
 import {
   LogoutOutlined,
   UserOutlined,
   EditOutlined,
   MoonOutlined,
   SunOutlined,
+  ProjectOutlined,
 } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { clearTokens } from '../store/auth.slice'
 import { toggleTheme } from '../store/theme.slice'
+import { setSelectedProject } from '../store/project.slice'
 import type { RootState } from '../store'
 import { useAuth } from '../hooks/useAuth'
 import { useGetMeQuery } from '../api/users.api'
+import { useGetProjectsQuery } from '../api/projects.api'
 import ProfileModal from '../components/ProfileModal'
-// import InterviewTasksTab from '../components/InterviewTasksTab' // temporarily hidden
 import UsersTab from '../components/UsersTab'
-// import SubmissionsTab from '../components/SubmissionsTab' // temporarily hidden
 import AgentTasksTab from '../components/AgentTasksTab'
 import ApiKeysTab from '../components/ApiKeysTab'
+import ProjectsTab from '../components/ProjectsTab'
 
 const { Header, Content } = Layout
 const { Text } = Typography
@@ -33,25 +35,21 @@ const roleTagColor: Record<string, string> = {
 export default function DashboardPage() {
   const dispatch = useDispatch()
   const isDark = useSelector((state: RootState) => state.theme.isDark)
+  const selectedProjectId = useSelector((state: RootState) => state.project.selectedProjectId)
   const auth = useAuth()
   const isMentor = auth?.role === 'mentor'
   const isAdmin = auth?.role === 'admin'
   const [profileOpen, setProfileOpen] = useState(false)
   const { data: meData, isLoading: meLoading, isError: meError } = useGetMeQuery()
+  const { data: projectsData } = useGetProjectsQuery()
   const me = meData?.data
 
+  const projectOptions = [
+    { value: '', label: 'All projects' },
+    ...(projectsData?.data ?? []).map((p) => ({ value: p.id, label: p.name })),
+  ]
+
   const tabs = [
-    // temporarily hidden — see task "Скрыть Interview Tasks и Submitions блоки"
-    // {
-    //   key: 'tasks',
-    //   label: 'Interview Tasks',
-    //   children: <InterviewTasksTab />,
-    // },
-    // {
-    //   key: 'submissions',
-    //   label: 'Submissions',
-    //   children: <SubmissionsTab />,
-    // },
     {
       key: 'agent-tasks',
       label: 'Agent Tasks',
@@ -71,15 +69,35 @@ export default function DashboardPage() {
           },
         ]
       : []),
+    ...(isAdmin
+      ? [
+          {
+            key: 'projects',
+            label: 'Projects',
+            children: <ProjectsTab />,
+          },
+        ]
+      : []),
   ]
 
   return (
     <Layout className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header className="flex items-center justify-between px-6 !bg-white dark:!bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <Text strong className="text-lg !text-purple-600">
+        <Text strong className="text-lg !text-purple-600 shrink-0">
           The Orchestra of Agents
         </Text>
         <Space align="center" size="middle" wrap>
+          <Space size={6}>
+            <ProjectOutlined className="text-gray-400" />
+            <Select
+              size="small"
+              value={selectedProjectId ?? ''}
+              options={projectOptions}
+              onChange={(value) => dispatch(setSelectedProject(value || null))}
+              className="w-40"
+              variant="borderless"
+            />
+          </Space>
           {meLoading ? (
             <Spin size="small" />
           ) : meError ? (

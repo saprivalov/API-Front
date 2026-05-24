@@ -17,11 +17,14 @@ import {
 } from 'antd'
 import { PlusOutlined, DeleteOutlined, EyeOutlined, RobotOutlined } from '@ant-design/icons'
 import type { ColumnsType } from 'antd/es/table'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../store'
 import {
   useGetAgentTasksQuery,
   useCreateAgentTaskMutation,
   useDeleteAgentTaskMutation,
 } from '../api/agent-tasks.api'
+import { useGetProjectsQuery } from '../api/projects.api'
 import type {
   AgentTask,
   AgentTaskStatus,
@@ -50,15 +53,36 @@ const STATUS_BADGE: Record<AgentTaskStatus, 'default' | 'processing' | 'success'
 export default function AgentTasksTab() {
   const auth = useAuth()
   const isMentor = auth?.role === 'mentor'
+  const isAdmin = auth?.role === 'admin'
+  const canCreate = isMentor || isAdmin
+
+  const selectedProjectId = useSelector((state: RootState) => state.project.selectedProjectId)
 
   const [filters, setFilters] = useState<GetAgentTasksQuery>({ page: 1, limit: 10 })
   const [createOpen, setCreateOpen] = useState(false)
   const [detailTask, setDetailTask] = useState<AgentTask | null>(null)
-  const [form] = Form.useForm<CreateAgentTaskBody>()
+  const [form] = Form.useForm<CreateAgentTaskBody & { assignTo?: string }>()
 
-  const { data, isLoading, error } = useGetAgentTasksQuery(filters)
+  const activeFilters: GetAgentTasksQuery = {
+    ...filters,
+    projectId: selectedProjectId ?? undefined,
+  }
+
+  const { data, isLoading, error } = useGetAgentTasksQuery(activeFilters)
+  const { data: projectsData } = useGetProjectsQuery()
   const [createTask, { isLoading: creating }] = useCreateAgentTaskMutation()
   const [deleteTask] = useDeleteAgentTaskMutation()
+
+  const projectOptions = (projectsData?.data ?? []).map((p) => ({
+    value: p.id,
+    label: p.name,
+  }))
+
+  const openCreate = () => {
+    form.resetFields()
+    if (selectedProjectId) form.setFieldValue('projectId', selectedProjectId)
+    setCreateOpen(true)
+  }
 
   const onCreateSubmit = async (values: CreateAgentTaskBody & { assignTo?: string }) => {
     const { assignTo, ...rest } = values
@@ -79,6 +103,17 @@ export default function AgentTasksTab() {
       dataIndex: 'title',
       key: 'title',
       render: (title) => <Text strong>{title}</Text>,
+    },
+    {
+      title: 'Project',
+      key: 'project',
+      width: 130,
+      render: (_, record) =>
+        record.project ? (
+          <Tag color="geekblue">{record.project.name}</Tag>
+        ) : (
+          <Text type="secondary">—</Text>
+        ),
     },
     {
       title: 'Status',
@@ -147,7 +182,7 @@ export default function AgentTasksTab() {
           <Tooltip title="Details">
             <Button size="small" icon={<EyeOutlined />} onClick={() => setDetailTask(record)} />
           </Tooltip>
-          {isMentor && (
+          {(isMentor || isAdmin) && (
             <Popconfirm
               title="Delete this task?"
               onConfirm={() => deleteTask(record.id)}
@@ -179,13 +214,8 @@ export default function AgentTasksTab() {
           ]}
           onChange={(value) => setFilters((f) => ({ ...f, status: value, page: 1 }))}
         />
-        {isMentor && (
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            className="ml-auto"
-            onClick={() => setCreateOpen(true)}
-          >
+        {canCreate && (
+          <Button type="primary" icon={<PlusOutlined />} className="ml-auto" onClick={openCreate}>
             Create Task
           </Button>
         )}
@@ -227,6 +257,9 @@ export default function AgentTasksTab() {
           </Form.Item>
           <Form.Item label="Description" name="description">
             <TextArea rows={3} placeholder="Optional detailed instructions for the agent" />
+          </Form.Item>
+          <Form.Item label="Project" name="projectId">
+            <Select allowClear placeholder="No project" options={projectOptions} />
           </Form.Item>
           <Form.Item label="Assign to agent" name="assignTo">
             <Select
@@ -284,6 +317,14 @@ export default function AgentTasksTab() {
                 <Text type="secondary">unassigned</Text>
               )}
             </Descriptions.Item>
+            {detailTask.project && (
+              <Descriptions.Item label="Project">
+                <Tag color="geekblue">{detailTask.project.name}</Tag>
+                <Text type="secondary" className="text-xs ml-2">
+                  {detailTask.project.repoPath} @ {detailTask.project.baseBranch}
+                </Text>
+              </Descriptions.Item>
+            )}
             {detailTask.description && (
               <Descriptions.Item label="Description">{detailTask.description}</Descriptions.Item>
             )}

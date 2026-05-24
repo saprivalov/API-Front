@@ -8,6 +8,13 @@ const CreatorSchema = z.object({
   email: z.string(),
 })
 
+const TaskProjectSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  repoPath: z.string(),
+  baseBranch: z.string(),
+})
+
 export const AgentTaskSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
@@ -15,6 +22,8 @@ export const AgentTaskSchema = z.object({
   status: AgentTaskStatusSchema,
   agentId: z.string().nullable().optional(),
   createdByUserId: z.string().uuid(),
+  projectId: z.string().uuid().nullable().optional(),
+  project: TaskProjectSchema.nullable().optional(),
   creator: CreatorSchema.optional().nullable(),
   result: z.record(z.string(), z.unknown()).nullable().optional(),
   metadata: z.record(z.string(), z.unknown()).nullable().optional(),
@@ -33,6 +42,7 @@ export const AgentTaskResponseSchema = z.object({
 
 export const GetAgentTasksQuerySchema = z.object({
   status: AgentTaskStatusSchema.optional(),
+  projectId: z.string().uuid().optional(),
   page: z.number().min(1).optional(),
   limit: z.number().min(1).max(100).optional(),
 })
@@ -40,6 +50,7 @@ export const GetAgentTasksQuerySchema = z.object({
 export const CreateAgentTaskBodySchema = z.object({
   title: z.string().min(3).max(200),
   description: z.string().max(2000).optional(),
+  projectId: z.string().uuid().optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
 })
 
