@@ -1,5 +1,17 @@
 import { useState } from 'react'
-import { Layout, Tabs, Button, Tag, Typography, Space, Avatar, Spin, Select } from 'antd'
+import {
+  Layout,
+  Tabs,
+  Button,
+  Tag,
+  Typography,
+  Space,
+  Avatar,
+  Spin,
+  Select,
+  Modal,
+  Empty,
+} from 'antd'
 import {
   LogoutOutlined,
   UserOutlined,
@@ -7,6 +19,7 @@ import {
   MoonOutlined,
   SunOutlined,
   ProjectOutlined,
+  SettingOutlined,
 } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { clearTokens } from '../store/auth.slice'
@@ -40,6 +53,7 @@ export default function DashboardPage() {
   const isMentor = auth?.role === 'mentor'
   const isAdmin = auth?.role === 'admin'
   const [profileOpen, setProfileOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const { data: meData, isLoading: meLoading, isError: meError } = useGetMeQuery()
   const { data: projectsData } = useGetProjectsQuery()
   const me = meData?.data
@@ -141,6 +155,12 @@ export default function DashboardPage() {
             {auth?.role}
           </Tag>
           <Button
+            icon={<SettingOutlined />}
+            onClick={() => setSettingsOpen(true)}
+            size="small"
+            aria-label="Settings"
+          />
+          <Button
             icon={isDark ? <SunOutlined /> : <MoonOutlined />}
             onClick={() => dispatch(toggleTheme())}
             size="small"
@@ -159,6 +179,15 @@ export default function DashboardPage() {
       </Content>
 
       {me && <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} user={me} />}
+
+      <Modal
+        title="Settings"
+        open={settingsOpen}
+        onCancel={() => setSettingsOpen(false)}
+        footer={null}
+      >
+        <Empty description="Coming soon" />
+      </Modal>
     </Layout>
   )
 }
