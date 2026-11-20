@@ -34,6 +34,7 @@ import UsersTab from '../components/UsersTab'
 import AgentTasksTab from '../components/AgentTasksTab'
 import ApiKeysTab from '../components/ApiKeysTab'
 import ProjectsTab from '../components/ProjectsTab'
+import DcTrainingTab from '../components/DcTrainingTab'
 
 const { Header, Content } = Layout
 const { Text } = Typography
@@ -68,6 +69,11 @@ export default function DashboardPage() {
       key: 'agent-tasks',
       label: 'Agent Tasks',
       children: <AgentTasksTab />,
+    },
+    {
+      key: 'dc-training',
+      label: 'DC Training',
+      children: <DcTrainingTab />,
     },
     ...(isMentor || isAdmin
       ? [
