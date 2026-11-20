@@ -148,6 +148,7 @@ export default function ProjectsTab() {
         columns={columns}
         dataSource={data?.data}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         size="middle"
         pagination={false}

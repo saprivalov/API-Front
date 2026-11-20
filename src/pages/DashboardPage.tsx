@@ -101,20 +101,25 @@ export default function DashboardPage() {
   ]
 
   return (
-    <Layout className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header className="flex items-center justify-between px-6 !bg-white dark:!bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <Text strong className="text-lg !text-purple-600 shrink-0">
+    <Layout className="min-h-dvh bg-gray-50 dark:bg-gray-900">
+      <Header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 !h-auto !leading-normal !py-3 !px-3 sm:!px-6 !bg-white dark:!bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <Text strong className="text-base sm:text-lg !text-purple-600 shrink-0">
           The Orchestra of Agents
         </Text>
-        <Space align="center" size="middle" wrap>
+        <Space
+          align="center"
+          size="small"
+          wrap
+          className="w-full sm:w-auto justify-between sm:justify-end"
+        >
           <Space size={6}>
-            <ProjectOutlined className="text-gray-400" />
+            <ProjectOutlined className="!hidden sm:!inline-flex text-gray-400" />
             <Select
               size="small"
               value={selectedProjectId ?? ''}
               options={projectOptions}
               onChange={(value) => dispatch(setSelectedProject(value || null))}
-              className="w-40"
+              className="w-28 sm:w-40"
               variant="borderless"
             />
           </Space>
@@ -139,7 +144,7 @@ export default function DashboardPage() {
               >
                 {(me?.name ?? '').trim().slice(0, 1).toUpperCase() || <UserOutlined />}
               </Avatar>
-              <div className="flex flex-col items-start min-w-0 max-w-[200px]">
+              <div className="hidden sm:flex flex-col items-start min-w-0 max-w-[200px]">
                 <Text strong className="text-sm truncate w-full">
                   {me?.name}
                 </Text>
@@ -152,12 +157,16 @@ export default function DashboardPage() {
                 size="small"
                 icon={<EditOutlined />}
                 onClick={() => setProfileOpen(true)}
+                aria-label="Edit profile"
               >
-                Edit
+                <span className="hidden sm:inline">Edit</span>
               </Button>
             </>
           )}
-          <Tag color={auth?.role ? (roleTagColor[auth.role] ?? 'default') : 'default'}>
+          <Tag
+            className="!hidden sm:!inline-block"
+            color={auth?.role ? (roleTagColor[auth.role] ?? 'default') : 'default'}
+          >
             {auth?.role}
           </Tag>
           <Button
@@ -172,14 +181,19 @@ export default function DashboardPage() {
             size="small"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           />
-          <Button icon={<LogoutOutlined />} onClick={() => dispatch(clearTokens())} size="small">
-            Logout
+          <Button
+            icon={<LogoutOutlined />}
+            onClick={() => dispatch(clearTokens())}
+            size="small"
+            aria-label="Logout"
+          >
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </Space>
       </Header>
 
-      <Content className="p-6">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
+      <Content className="p-2 sm:p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-3 sm:p-6">
           <Tabs defaultActiveKey="agent-tasks" items={tabs} />
         </div>
       </Content>

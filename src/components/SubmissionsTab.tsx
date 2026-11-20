@@ -142,6 +142,7 @@ export default function SubmissionsTab() {
         columns={columns}
         dataSource={data?.data}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         pagination={{ pageSize: 10, showTotal: (t) => `${t} submissions` }}
         size="middle"
