@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { Card, Checkbox, Progress, Space, Tag, Typography } from 'antd'
+import { Avatar, Card, Checkbox, Progress, Space, Tag, Typography } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
+
+import { useGetMeQuery } from '../api/users.api'
 
 import { STORAGE_KEY, trainingModules } from './dcTraining.data'
 
@@ -25,6 +28,8 @@ function saveCompleted(ids: string[]) {
 
 export default function DcTrainingTab() {
   const [completed, setCompleted] = useState<string[]>(loadCompleted)
+  const { data: meData } = useGetMeQuery()
+  const me = meData?.data
 
   const total = trainingModules.reduce((sum, m) => sum + m.tasks.length, 0)
   const percent = total ? Math.round((completed.length / total) * 100) : 0
@@ -37,14 +42,25 @@ export default function DcTrainingTab() {
 
   return (
     <Space direction="vertical" size="large" className="w-full">
-      <div>
-        <Title level={4} className="!mb-1">
-          Data center training course
-        </Title>
-        <Text type="secondary">
-          {completed.length} of {total} tasks done
-        </Text>
-        <Progress percent={percent} aria-label="Course progress" />
+      <div className="flex items-center gap-4">
+        <Avatar
+          src={me?.avatar ?? undefined}
+          size={56}
+          alt={me?.name ?? 'User avatar'}
+          className="bg-purple-100 text-purple-700 shrink-0"
+        >
+          {(me?.name ?? '').trim().slice(0, 1).toUpperCase() || <UserOutlined />}
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <Title level={4} className="!mb-1">
+            Data center training course
+          </Title>
+          <Text type="secondary">
+            {me?.name ? `${me.name} · ` : ''}
+            {completed.length} of {total} tasks done
+          </Text>
+          <Progress percent={percent} aria-label="Course progress" />
+        </div>
       </div>
 
       {trainingModules.map((module) => {
