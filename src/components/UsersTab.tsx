@@ -118,6 +118,7 @@ export default function UsersTab() {
         columns={columns}
         dataSource={data?.data}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         pagination={false}
         size="middle"

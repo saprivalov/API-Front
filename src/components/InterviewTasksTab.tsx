@@ -206,6 +206,7 @@ export default function InterviewTasksTab() {
         columns={columns}
         dataSource={data?.data}
         rowKey="id"
+        scroll={{ x: 'max-content' }}
         loading={isLoading}
         size="middle"
         pagination={{
